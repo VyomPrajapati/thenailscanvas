@@ -10,7 +10,7 @@ export default function ShopPage() {
   const [filters, setFilters] = useState<{ categories: string[]; maxPrice: number; sizes: string[] }>({ categories: [], maxPrice: 3000, sizes: [] });
   useEffect(() => {
     const id = setInterval(() => {
-      const f = (window as any).__shopFilters as { selectedCategories: string[]; selectedSizes: string[]; price: number } | undefined;
+      const f = (window as Window & { __shopFilters?: { selectedCategories: string[]; selectedSizes: string[]; price: number } }).__shopFilters;
       if (f) setFilters({ categories: f.selectedCategories, maxPrice: f.price, sizes: f.selectedSizes });
     }, 200);
     return () => clearInterval(id);

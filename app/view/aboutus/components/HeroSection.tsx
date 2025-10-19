@@ -10,7 +10,7 @@ export default function HeroSection() {
               About <span className="italic">TheNailsCanvas</span>
             </h1>
             <p className="text-lg text-black/70 mb-8 leading-relaxed">
-              We're revolutionizing nail care with reusable gel nails that deliver salon-quality results 
+              We&apos;re revolutionizing nail care with reusable gel nails that deliver salon-quality results 
               in minutes. Our mission is to make beautiful, long-lasting nails accessible to everyone, 
               everywhere.
             </p>

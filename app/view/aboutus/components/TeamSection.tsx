@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { founder } from "../data";
 
 export default function TeamSection() {
@@ -13,9 +14,11 @@ export default function TeamSection() {
         
         <div className="max-w-2xl mx-auto text-center">
           <div className="relative h-32 w-32 mx-auto mb-6 rounded-full overflow-hidden ring-4 ring-black/10">
-            <img 
+            <Image 
               src={founder.image} 
               alt={founder.name} 
+              width={128}
+              height={128}
               className="h-full w-full object-cover"
             />
           </div>

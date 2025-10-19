@@ -5,6 +5,7 @@ import React, {
   useState,
   createContext,
   useContext,
+  useCallback,
 } from "react";
 import {
   IconArrowNarrowLeft,
@@ -46,16 +47,9 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
     return window && window.innerWidth < 768;
   };
 
-  const stepSize = () => (isMobile() ? 230 + 4 : 384 + 8); // card width + gap
+  const stepSize = useCallback(() => (isMobile() ? 230 + 4 : 384 + 8), []); // card width + gap
 
-  useEffect(() => {
-    if (carouselRef.current) {
-      carouselRef.current.scrollLeft = initialScroll;
-      checkScrollability();
-    }
-  }, [initialScroll]);
-
-  const checkScrollability = () => {
+  const checkScrollability = useCallback(() => {
     if (carouselRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
       setCanScrollLeft(scrollLeft > 0);
@@ -64,7 +58,14 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
       const idx = Math.round(scrollLeft / stepSize());
       if (idx !== currentIndex) setCurrentIndex(idx);
     }
-  };
+  }, [currentIndex, stepSize]);
+
+  useEffect(() => {
+    if (carouselRef.current) {
+      carouselRef.current.scrollLeft = initialScroll;
+      checkScrollability();
+    }
+  }, [initialScroll, checkScrollability]);
 
   const scrollToIndex = (index: number) => {
     if (!carouselRef.current) return;
@@ -182,8 +183,13 @@ export const Card = ({
 }) => {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { onCardClose, currentIndex } = useContext(CarouselContext);
+  const { onCardClose } = useContext(CarouselContext);
   const enableModal = false; // disable click-to-open behavior
+
+  const handleClose = useCallback(() => {
+    setOpen(false);
+    onCardClose(index);
+  }, [onCardClose, index]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -200,19 +206,12 @@ export const Card = ({
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [open]);
+  }, [open, handleClose]);
 
-  if (enableModal) {
-    useOutsideClick(containerRef, () => handleClose());
-  }
+  useOutsideClick(containerRef, enableModal ? () => handleClose() : () => {});
 
   const handleOpen = () => {
     setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    onCardClose(index);
   };
 
   return (
@@ -298,25 +297,17 @@ export const BlurImage = ({
   alt,
   ...rest
 }: ImageProps) => {
-  const [isLoading, setLoading] = useState(false);
-  // Remove Next.js Image-only props (like `fill`) before passing to native img
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { fill: _fill, loader: _loader, placeholder: _placeholder, blurDataURL: _blurDataURL, quality: _quality, ...imgRest } = rest as any;
   return (
-    <img
+    <Image
       className={cn(
         "h-full w-full object-cover",
         className,
       )}
-      onLoad={() => setLoading(false)}
       src={src as string}
       width={width}
       height={height}
-      loading="lazy"
-      decoding="async"
-      // remove unsupported prop on native img; Next/Image handles blurDataURL only
       alt={alt ? alt : "Background of a beautiful view"}
-      {...imgRest}
+      {...rest}
     />
   );
 };

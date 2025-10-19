@@ -12,7 +12,7 @@ import { memo, useCallback } from "react";
 const ProductShowcase = memo(function ProductShowcase() {
   const router = useRouter();
 
-  const handleBuyNow = useCallback((p: any) => {
+  const handleBuyNow = useCallback((p: { name: string; price: number; img: string }) => {
     addToCart({ name: p.name, price: p.price, img: p.img, qty: 1 });
     router.push(ROUTES.checkout);
   }, [router]);

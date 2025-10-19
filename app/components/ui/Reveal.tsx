@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState, memo, useCallback } from "react";
+import React, { useEffect, useRef, useState, memo, useCallback } from "react";
 
 type RevealProps = {
   children: React.ReactNode;
-  as?: keyof JSX.IntrinsicElements;
+  as?: keyof React.JSX.IntrinsicElements;
   delayMs?: number;
   className?: string;
   direction?: "up" | "down" | "left" | "right" | "fade";
@@ -17,7 +17,7 @@ const Reveal = memo(function Reveal({
   className = "",
   direction = "up",
 }: RevealProps) {
-  const ref = useRef<HTMLElement | null>(null);
+  const ref = useRef<HTMLElement | SVGElement | null>(null);
   const [visible, setVisible] = useState(false);
 
   const onIntersect = useCallback<IntersectionObserverCallback>((entries, observer) => {
@@ -30,7 +30,7 @@ const Reveal = memo(function Reveal({
   }, []);
 
   useEffect(() => {
-    const el = ref.current as HTMLElement | null;
+    const el = ref.current;
     if (!el) return;
 
     const observer = new IntersectionObserver(onIntersect, {
@@ -38,7 +38,7 @@ const Reveal = memo(function Reveal({
       threshold: 0.15,
     });
 
-    observer.observe(el);
+    observer.observe(el as Element);
     return () => observer.disconnect();
   }, [onIntersect]);
 
@@ -56,17 +56,13 @@ const Reveal = memo(function Reveal({
   const shownDirClass =
     direction === "left" || direction === "right" ? "translate-x-0" : direction === "down" ? "translate-y-0" : "translate-y-0";
 
-  return (
-    <Tag
-      ref={ref as any}
-      className={`${visible ? `opacity-100 ${shownDirClass}` : `opacity-0 ${dirClass}`} transition-all duration-500 ease-out ${className}`}
-      style={{ transitionDelay: `${delayMs}ms` }}
-    >
-      {children}
-    </Tag>
-  );
+  const props = {
+    ref,
+    className: `${visible ? `opacity-100 ${shownDirClass}` : `opacity-0 ${dirClass}`} transition-all duration-500 ease-out ${className}`,
+    style: { transitionDelay: `${delayMs}ms` },
+  };
+
+  return React.createElement(Tag, props, children);
 });
 
 export default Reveal;
-
-

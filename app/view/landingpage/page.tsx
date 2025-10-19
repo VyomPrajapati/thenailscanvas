@@ -4,7 +4,6 @@ import Collections from "./components/Collections";
 import SustainabilityBanner from "./components/SustainabilityBanner";
 // Replace FollowUs with CircularGallery
 import CircularGallery from "./components/circulargallery";
-import { categoryCards } from "./components/data";
 import CategoryTiles from "./components/CategoryTiles";
 import ProductShowcase from "./components/ProductShowcase";
 import Newsletter from "./components/Newsletter";

@@ -1,14 +1,11 @@
 import React from 'react'
-
-import LandingPage from './view/landingpage/page';
+import ComingSoon from './components/ComingSoon';
+// import LandingPage from './view/landingpage/page'; // Uncomment to switch back to landing page
 
 const Page: React.FC = () => {  
   return (  
-    <>
-
-        <LandingPage />
-
-    </>
+    <ComingSoon />
+    // <LandingPage /> // Uncomment to switch back to landing page
   );
 };
 

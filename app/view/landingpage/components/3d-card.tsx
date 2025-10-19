@@ -10,6 +10,7 @@ import React, {
   useEffect,
   memo,
   useCallback,
+  useMemo,
 } from "react";
 
 const MouseEnterContext = createContext<
@@ -17,9 +18,9 @@ const MouseEnterContext = createContext<
 >(undefined);
 
 // Throttle function for performance
-function throttle<T extends (...args: any[]) => void>(func: T, limit: number): T {
+function throttle<T extends (...args: unknown[]) => void>(func: T, limit: number): T {
   let inThrottle: boolean;
-  return ((...args: any[]) => {
+  return ((...args: Parameters<T>) => {
     if (!inThrottle) {
       func(...args);
       inThrottle = true;
@@ -28,7 +29,7 @@ function throttle<T extends (...args: any[]) => void>(func: T, limit: number): T
   }) as T;
 }
 
-export const CardContainer = memo(({
+export const CardContainer = memo(function CardContainer({
   children,
   className,
   containerClassName,
@@ -36,24 +37,29 @@ export const CardContainer = memo(({
   children?: React.ReactNode;
   className?: string;
   containerClassName?: string;
-}) => {
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMouseEntered, setIsMouseEntered] = useState(false);
 
-  const handleMouseMove = useCallback(throttle((e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
     const { left, top, width, height } =
       containerRef.current.getBoundingClientRect();
     const x = (e.clientX - left - width / 2) / 20; // Reduced sensitivity
     const y = (e.clientY - top - height / 2) / 20; // Reduced sensitivity
     containerRef.current.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
-  }, 16), []); // 60fps throttling
+  }, []);
 
-  const handleMouseEnter = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+  const throttledMouseMove = useMemo(() => 
+    throttle(handleMouseMove as (...args: unknown[]) => void, 16),
+    [handleMouseMove]
+  );
+
+  const handleMouseEnter = useCallback(() => {
     setIsMouseEntered(true);
   }, []);
 
-  const handleMouseLeave = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseLeave = useCallback(() => {
     if (!containerRef.current) return;
     setIsMouseEntered(false);
     containerRef.current.style.transform = `rotateY(0deg) rotateX(0deg)`;
@@ -72,7 +78,7 @@ export const CardContainer = memo(({
         <div
           ref={containerRef}
           onMouseEnter={handleMouseEnter}
-          onMouseMove={handleMouseMove}
+          onMouseMove={throttledMouseMove}
           onMouseLeave={handleMouseLeave}
           className={cn(
             "flex items-center justify-center relative transition-transform duration-300 ease-out will-change-transform cursor-pointer",
@@ -89,13 +95,13 @@ export const CardContainer = memo(({
   );
 });
 
-export const CardBody = memo(({
+export const CardBody = memo(function CardBody({
   children,
   className,
 }: {
   children: React.ReactNode;
   className?: string;
-}) => {
+}) {
   return (
     <div
       className={cn(
@@ -108,7 +114,7 @@ export const CardBody = memo(({
   );
 });
 
-export const CardItem = memo(({
+export const CardItem = memo(function CardItem({
   as: Tag = "div",
   children,
   className,
@@ -129,8 +135,8 @@ export const CardItem = memo(({
   rotateX?: number | string;
   rotateY?: number | string;
   rotateZ?: number | string;
-  [key: string]: any;
-}) => {
+  [key: string]: unknown;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const [isMouseEntered] = useMouseEnter();
 

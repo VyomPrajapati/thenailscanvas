@@ -35,7 +35,7 @@ export default function ContactForm() {
     <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 ring-1 ring-black/10 shadow-lg">
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-black mb-2">Send us a Message</h2>
-        <p className="text-black/70">Fill out the form below and we'll respond as soon as possible.</p>
+        <p className="text-black/70">Fill out the form below and we&apos;ll respond as soon as possible.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">

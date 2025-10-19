@@ -10,14 +10,16 @@ export default function MiniCart() {
   const [lastItem, setLastItem] = useState<{ name: string } | null>(null);
 
   useEffect(() => {
-    const onAdded = (e: any) => {
-      setLastItem({ name: e?.detail?.item?.name || "Product" });
+    const onAdded = (e: Event) => {
+      const customEvent = e as CustomEvent<{ item?: { name?: string } }>;
+      setLastItem({ name: customEvent?.detail?.item?.name || "Product" });
       setOpen(true);
       const id = setTimeout(() => setOpen(false), 2500);
       return () => clearTimeout(id);
     };
-    window.addEventListener("tnc_cart_added" as any, onAdded as any);
-    return () => window.removeEventListener("tnc_cart_added" as any, onAdded as any);
+    const eventName = "tnc_cart_added";
+    window.addEventListener(eventName, onAdded);
+    return () => window.removeEventListener(eventName, onAdded);
   }, []);
 
   const handleViewCart = () => {

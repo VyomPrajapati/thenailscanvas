@@ -15,7 +15,7 @@ export default function Sidebar() {
   const [price, setPrice] = useState<number>(priceRanges.max);
 
   if (typeof window !== 'undefined') {
-    (window as any).__shopFilters = { selectedCategories, selectedSizes, price };
+    (window as Window & { __shopFilters?: { selectedCategories: string[]; selectedSizes: string[]; price: number } }).__shopFilters = { selectedCategories, selectedSizes, price };
   }
 
   const Section = ({ id, title, children }: { id: string; title: string; children: React.ReactNode }) => (

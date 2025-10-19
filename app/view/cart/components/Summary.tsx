@@ -2,7 +2,7 @@
 
 import { ROUTES } from "../../routes";
 import { useRouter } from "next/navigation";
-import { calculateCartSummary, cartActions } from "../data";
+import { cartActions } from "../data";
 
 export default function Summary({ subtotal, promoApplied = false, hasItems = true }: { subtotal: number; promoApplied?: boolean; hasItems?: boolean }) {
   const router = useRouter();

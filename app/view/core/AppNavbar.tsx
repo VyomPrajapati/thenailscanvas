@@ -1,6 +1,6 @@
 "use client";
 
-import { Navbar, NavBody, NavItems, MobileNav, MobileNavHeader, MobileNavMenu, MobileNavToggle } from "./resizable-navbar";
+import { Navbar, NavBody, NavItems, MobileNav, MobileNavHeader, MobileNavMenu } from "./resizable-navbar";
 import Image from "next/image";
 import { ROUTES } from "../routes";
 import { useRouter } from "next/navigation";

@@ -12,7 +12,7 @@ export default function HeroSection() {
         </h1>
         <p className="text-lg sm:text-xl text-black/80 max-w-3xl mx-auto leading-relaxed">
           Have questions about our reusable gel nails? Need help with sizing or application? 
-          We're here to help you achieve the perfect salon-quality look at home.
+          We&apos;re here to help you achieve the perfect salon-quality look at home.
         </p>
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
           <div className="flex items-center space-x-2 text-black/80">
